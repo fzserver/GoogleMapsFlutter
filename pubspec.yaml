@@ -32,6 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_polyline_points: ^1.0.0
+  google_map_polyline_new: ^0.3.0+2
   google_maps_flutter: ^2.2.3
 
 dev_dependencies:

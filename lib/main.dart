@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/polyline.dart';
 
 import 'home.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: HomePage(),
+      home: Poly(),
     );
   }
 }
