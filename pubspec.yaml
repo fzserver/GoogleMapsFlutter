@@ -32,9 +32,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_polyline_points: ^1.0.0
+  geolocator: ^9.0.2
   google_map_polyline_new: ^0.3.0+2
   google_maps_flutter: ^2.2.3
-  geolocator: ^9.0.2
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

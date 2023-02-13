@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location/TextFieldWithDropDown.dart';
+import 'package:intl/intl.dart';
 import 'package:location/dataTypes.dart';
 import 'package:location/dropdown.dart';
+
+import 'dropDownWithBorderLabel.dart';
 
 class Poly extends StatefulWidget {
   @override
@@ -75,6 +77,12 @@ class _PolyState extends State<Poly> {
       id: 4,
     ),
   ];
+
+  final List<String> meetList = [
+    'Himanshu',
+    'Tapas',
+  ];
+  String meetselectedperson = 'Himanshu';
 
   late LatLng selectedLocation;
   int selectedDropDownValue = 0;
@@ -260,6 +268,30 @@ class _PolyState extends State<Poly> {
     _getPolylinesWithLocation(call: true);
   }
 
+  void onMeetValueChange(value) {
+    setState(() {
+      meetselectedperson = value;
+    });
+  }
+
+  final TextEditingController nameController = TextEditingController();
+
+  DateTime fromDate = DateTime.now();
+
+  Future<DateTime> selectDate(DateTime _date) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2015),
+      lastDate: DateTime.now().add(const Duration(days: 1)),
+    );
+
+    if (picked != null) {
+      _date = picked;
+    }
+    return _date;
+  }
+
   @override
   Widget build(BuildContext context) {
     _kLake = CameraPosition(
@@ -346,20 +378,57 @@ class _PolyState extends State<Poly> {
                                             fontSize: 18.0,
                                           ),
                                         ),
-                                        TextFormField(
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.w600,
+                                        textField(
+                                          placeholder: 'Visitor\'s Name',
+                                          controller: nameController,
+                                        ),
+                                        textField(
+                                          placeholder: 'Visitor\'s Phone',
+                                          controller: nameController,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                  Icons.calendar_today),
+                                              onPressed: () async {
+                                                fromDate = await selectDate(
+                                                    DateTime.now());
+                                                setState(() {
+                                                  fromDate;
+                                                });
+                                              },
+                                            ),
+                                            Text(DateFormat("yyyy-MM-dd")
+                                                .format(fromDate)),
+                                            // MaterialButton(
+                                            //   onPressed: () =>
+                                            //       selectDate(DateTime.now()),
+                                            //   child: Text('Select Data'),
+                                            //   color: Colors.pink[50],
+                                            // ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: DropDownWithBorderLabel(
+                                            data: meetList,
+                                            label: 'To whom you want to meet?',
+                                            onValueChange: onMeetValueChange,
+                                            selectedValue: meetselectedperson,
                                           ),
                                         ),
-                                        TextFormField(
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
+                                        // Dropdown(
+                                        //   data: meetList,
+                                        //   onValueChange: onMeetValueChange,
+                                        //   label: 'Meet To: ',
+                                        //   selectedValue: meetselectedperson,
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -373,6 +442,7 @@ class _PolyState extends State<Poly> {
                         textColor: Colors.white,
                         height: 50.0,
                       ),
+
                       // ElevatedButton(
                       //   onPressed: _getPolylinesWithLocation,
                       //   child: const Text('Polylines with Location'),
@@ -418,6 +488,8 @@ Widget textField({
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: placeholder,
+        fillColor: Colors.white,
+        filled: true,
       ),
     ),
   );
