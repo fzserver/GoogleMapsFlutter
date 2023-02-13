@@ -5,6 +5,8 @@ import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/TextFieldWithDropDown.dart';
+import 'package:location/dataTypes.dart';
+import 'package:location/dropdown.dart';
 
 class Poly extends StatefulWidget {
   @override
@@ -18,9 +20,6 @@ class _PolyState extends State<Poly> {
   final GoogleMapPolyline _googleMapPolyline = GoogleMapPolyline(
     apiKey: "AIzaSyDHCbgMAU-KzqFmI8LtrG4DWepIm7mAJJM",
   );
-
-  final TextEditingController _fromController = TextEditingController(),
-      _toController = TextEditingController();
 
   //Polyline patterns
   List<List<PatternItem>> patterns = <List<PatternItem>>[
@@ -44,8 +43,39 @@ class _PolyState extends State<Poly> {
   final Set<Marker> _markers = {};
 
   final LatLng _mapInitLocation = const LatLng(23.5633973, 87.0907071);
-  final LatLng _originLocation = const LatLng(23.5633973, 87.0907071);
-  final LatLng _destinationLocation = const LatLng(23.5659506, 87.0863055);
+  // final LatLng _originLocation = const LatLng(23.5633973, 87.0907071);
+  // final LatLng _destinationLocation = const LatLng(23.5659506, 87.0863055);
+
+  final List<LocationCoordinates> locationList = [
+    LocationCoordinates(
+      name: 'Ghatal',
+      latLong: const LatLng(22.659500, 87.736900),
+      id: 0,
+    ),
+    LocationCoordinates(
+      name: 'Panskura',
+      latLong: const LatLng(22.391920, 87.739662),
+      id: 1,
+    ),
+    LocationCoordinates(
+      name: 'Kharagpur',
+      latLong: const LatLng(22.391920, 87.739662),
+      id: 2,
+    ),
+    LocationCoordinates(
+      name: 'Daspur',
+      latLong: const LatLng(22.391920, 87.739662),
+      id: 3,
+    ),
+    LocationCoordinates(
+      name: 'Hyderabad',
+      latLong: const LatLng(17.385044, 78.486671),
+      id: 4,
+    ),
+  ];
+
+  late LatLng selectedLocation;
+  int selectedDropDownValue = 0;
 
   bool _loading = false;
 
@@ -97,11 +127,12 @@ class _PolyState extends State<Poly> {
   }
 
   //Get polyline with Location (latitude and longitude)
-  _getPolylinesWithLocation() async {
+  _getPolylinesWithLocation({dynamic call}) async {
     _setLoadingMenu(true);
+    Position position = await _determinePosition();
     _coordinates = await _googleMapPolyline.getCoordinatesWithLocation(
-      origin: _originLocation,
-      destination: _destinationLocation,
+      origin: LatLng(position.latitude, position.longitude),
+      destination: selectedLocation,
       mode: RouteMode.walking,
     );
 
@@ -114,52 +145,58 @@ class _PolyState extends State<Poly> {
 
     _addPolyline(_coordinates);
     _setLoadingMenu(false);
+    if (call == true) {
+      _getPolylinesWithLocation();
+      setState(() {
+        call = false;
+      });
+    }
   }
 
   //Get polyline with Address
-  _getPolylinesWithAddress() async {
-    _setLoadingMenu(true);
+  // _getPolylinesWithAddress() async {
+  //   _setLoadingMenu(true);
 
-    if (_fromController.text.isNotEmpty && _toController.text.isNotEmpty) {
-      if (_fromController.text == 'Current Location') {
-        Position position = await _determinePosition();
-        _coordinates =
-            await _googleMapPolyline.getPolylineCoordinatesWithAddress(
-          origin: 'Delhi',
-          destination: _toController.text,
-          mode: RouteMode.driving,
-        );
+  //   if (_fromController.text.isNotEmpty && _toController.text.isNotEmpty) {
+  //     if (_fromController.text == 'Current Location') {
+  //       Position position = await _determinePosition();
+  //       _coordinates =
+  //           await _googleMapPolyline.getPolylineCoordinatesWithAddress(
+  //         origin: 'Delhi',
+  //         destination: _toController.text,
+  //         mode: RouteMode.driving,
+  //       );
 
-        _coordinates = await _googleMapPolyline.getCoordinatesWithLocation(
-          origin: LatLng(position.latitude, position.longitude),
-          destination: _coordinates![_coordinates!.length - 1],
-          mode: RouteMode.walking,
-        );
-        _goToTheLake();
-      } else {
-        _coordinates =
-            await _googleMapPolyline.getPolylineCoordinatesWithAddress(
-          origin: _fromController.text,
-          destination: _toController.text,
-          mode: RouteMode.driving,
-        );
-        _goToTheLake();
-      }
-    } else {
-      _coordinates = await _googleMapPolyline.getPolylineCoordinatesWithAddress(
-        origin: '55 Kingston Ave, Brooklyn, NY 11213, USA',
-        destination: '8007 Cypress Ave, Glendale, NY 11385, USA',
-        mode: RouteMode.driving,
-      );
-    }
-    setMapPins();
-    setState(() {
-      _polylines.clear();
-    });
+  //       _coordinates = await _googleMapPolyline.getCoordinatesWithLocation(
+  //         origin: LatLng(position.latitude, position.longitude),
+  //         destination: _coordinates![_coordinates!.length - 1],
+  //         mode: RouteMode.walking,
+  //       );
+  //       _goToTheLake();
+  //     } else {
+  //       _coordinates =
+  //           await _googleMapPolyline.getPolylineCoordinatesWithAddress(
+  //         origin: _fromController.text,
+  //         destination: _toController.text,
+  //         mode: RouteMode.driving,
+  //       );
+  //       _goToTheLake();
+  //     }
+  //   } else {
+  //     _coordinates = await _googleMapPolyline.getPolylineCoordinatesWithAddress(
+  //       origin: '55 Kingston Ave, Brooklyn, NY 11213, USA',
+  //       destination: '8007 Cypress Ave, Glendale, NY 11385, USA',
+  //       mode: RouteMode.driving,
+  //     );
+  //   }
+  //   setMapPins();
+  //   setState(() {
+  //     _polylines.clear();
+  //   });
 
-    _addPolyline(_coordinates);
-    _setLoadingMenu(false);
-  }
+  //   _addPolyline(_coordinates);
+  //   _setLoadingMenu(false);
+  // }
 
   _addPolyline(List<LatLng>? _coordinates) {
     PolylineId id = PolylineId("poly$_polylineCount");
@@ -212,6 +249,15 @@ class _PolyState extends State<Poly> {
     }
   }
 
+  void onDropDownValueChange(value) {
+    setState(() {
+      selectedDropDownValue = value;
+      selectedLocation = locationList[value].latLong;
+    });
+
+    _getPolylinesWithLocation(call: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     _kLake = CameraPosition(
@@ -235,15 +281,18 @@ class _PolyState extends State<Poly> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  TextFieldWithDropDown(
-                    controller: _fromController,
-                    options: const ['Current Location'],
-                    placeholder: 'From',
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Dropdown(
+                      data: locationList,
+                      onValueChange: onDropDownValueChange,
+                      label: 'To',
+                      selectedValue: selectedDropDownValue,
+                    ),
                   ),
-                  textField(placeholder: 'To', controller: _toController),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height - 240,
+                    height: MediaQuery.of(context).size.height - 99,
                     child: GoogleMap(
                       myLocationEnabled: true,
                       compassEnabled: true,
@@ -258,24 +307,24 @@ class _PolyState extends State<Poly> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          // ElevatedButton(
-                          //   onPressed: _getPolylinesWithLocation,
-                          //   child: const Text('Polylines with Location'),
-                          // ),
-                          // ElevatedButton(
-                          //   onPressed: _getPolylinesWithAddress,
-                          //   child: const Text('Polylines with Address'),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Align(
+                  //     alignment: Alignment.center,
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //       children: <Widget>[
+                  //         ElevatedButton(
+                  //           onPressed: _getPolylinesWithLocation,
+                  //           child: const Text('Polylines with Location'),
+                  //         ),
+                  //         ElevatedButton(
+                  //           onPressed: _getPolylinesWithAddress,
+                  //           child: const Text('Polylines with Address'),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               );
             },
@@ -295,23 +344,6 @@ class _PolyState extends State<Poly> {
             : Container(),
       ),
       debugShowCheckedModeBanner: false,
-    );
-  }
-
-  Widget textField({
-    required placeholder,
-    required TextEditingController controller,
-  }) {
-    return Container(
-      height: 48,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: placeholder,
-        ),
-      ),
     );
   }
 }
