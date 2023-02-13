@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -275,6 +276,7 @@ class _PolyState extends State<Poly> {
   }
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   DateTime fromDate = DateTime.now();
 
@@ -384,7 +386,7 @@ class _PolyState extends State<Poly> {
                                         ),
                                         textField(
                                           placeholder: 'Visitor\'s Phone',
-                                          controller: nameController,
+                                          controller: phoneController,
                                         ),
                                         Row(
                                           mainAxisAlignment:
@@ -406,14 +408,9 @@ class _PolyState extends State<Poly> {
                                             ),
                                             Text(DateFormat("yyyy-MM-dd")
                                                 .format(fromDate)),
-                                            // MaterialButton(
-                                            //   onPressed: () =>
-                                            //       selectDate(DateTime.now()),
-                                            //   child: Text('Select Data'),
-                                            //   color: Colors.pink[50],
-                                            // ),
                                           ],
                                         ),
+
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: DropDownWithBorderLabel(
@@ -422,6 +419,16 @@ class _PolyState extends State<Poly> {
                                             onValueChange: onMeetValueChange,
                                             selectedValue: meetselectedperson,
                                           ),
+                                        ),
+                                        MaterialButton(
+                                          onPressed: () {
+                                            nameController.clear();
+                                            phoneController.clear();
+                                            Fluttertoast.showToast(
+                                                msg: 'Visitor Pass Created!');
+                                          },
+                                          child: Text('Save'),
+                                          color: Colors.pink[50],
                                         ),
                                         // Dropdown(
                                         //   data: meetList,
