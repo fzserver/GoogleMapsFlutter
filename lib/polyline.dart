@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -275,59 +277,115 @@ class _PolyState extends State<Poly> {
         //   backgroundColor: Colors.pink,
         // ),
         body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, cont) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Dropdown(
-                      data: locationList,
-                      onValueChange: onDropDownValueChange,
-                      label: 'To',
-                      selectedValue: selectedDropDownValue,
-                    ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Dropdown(
+                  data: locationList,
+                  onValueChange: onDropDownValueChange,
+                  label: 'To',
+                  selectedValue: selectedDropDownValue,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 160,
+                child: GoogleMap(
+                  myLocationEnabled: true,
+                  compassEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  markers: _markers,
+                  polylines: Set<Polyline>.of(_polylines.values),
+                  initialCameraPosition: CameraPosition(
+                    bearing: 0.0,
+                    tilt: 0.0,
+                    target: _mapInitLocation,
+                    zoom: 17.5,
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height - 99,
-                    child: GoogleMap(
-                      myLocationEnabled: true,
-                      compassEnabled: true,
-                      onMapCreated: _onMapCreated,
-                      markers: _markers,
-                      polylines: Set<Polyline>.of(_polylines.values),
-                      initialCameraPosition: CameraPosition(
-                        bearing: 0.0,
-                        tilt: 0.0,
-                        target: _mapInitLocation,
-                        zoom: 17.5,
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      MaterialButton(
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            // context and builder are
+                            // required properties in this widget
+                            context: context,
+                            builder: (BuildContext context) {
+                              // we set up a container inside which
+                              // we create center column and display text
+
+                              // Returning SizedBox instead of a Container
+                              return Container(
+                                color: Colors.amber[900],
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 12.0),
+                                  child: Form(
+                                    // key: ,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Text(
+                                          'Visitor Pass Form',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Text('Add Visitor Pass'),
+                        color: Colors.deepOrange,
+                        textColor: Colors.white,
+                        height: 50.0,
                       ),
-                    ),
+                      // ElevatedButton(
+                      //   onPressed: _getPolylinesWithLocation,
+                      //   child: const Text('Polylines with Location'),
+                      // ),
+                      // ElevatedButton(
+                      //   onPressed: _getPolylinesWithAddress,
+                      //   child: const Text('Polylines with Address'),
+                      // ),
+                    ],
                   ),
-                  // Expanded(
-                  //   child: Align(
-                  //     alignment: Alignment.center,
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //       children: <Widget>[
-                  //         ElevatedButton(
-                  //           onPressed: _getPolylinesWithLocation,
-                  //           child: const Text('Polylines with Location'),
-                  //         ),
-                  //         ElevatedButton(
-                  //           onPressed: _getPolylinesWithAddress,
-                  //           child: const Text('Polylines with Address'),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              );
-            },
+                ),
+              ),
+            ],
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -346,4 +404,21 @@ class _PolyState extends State<Poly> {
       debugShowCheckedModeBanner: false,
     );
   }
+}
+
+Widget textField({
+  required placeholder,
+  required TextEditingController controller,
+}) {
+  return Container(
+    height: 48,
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        labelText: placeholder,
+      ),
+    ),
+  );
 }
