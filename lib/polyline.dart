@@ -224,58 +224,62 @@ class _PolyState extends State<Poly> {
     return MaterialApp(
       darkTheme: ThemeData(brightness: Brightness.dark),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Map Polyline'),
-          backgroundColor: Colors.pink,
-        ),
-        body: LayoutBuilder(
-          builder: (context, cont) {
-            return Column(
-              children: <Widget>[
-                TextFieldWithDropDown(
-                  controller: _fromController,
-                  options: const ['Current Location'],
-                  placeholder: 'From',
-                ),
-                textField(placeholder: 'To', controller: _toController),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height - 240,
-                  child: GoogleMap(
-                    myLocationEnabled: true,
-                    compassEnabled: true,
-                    onMapCreated: _onMapCreated,
-                    markers: _markers,
-                    polylines: Set<Polyline>.of(_polylines.values),
-                    initialCameraPosition: CameraPosition(
-                      bearing: 0.0,
-                      tilt: 0.0,
-                      target: _mapInitLocation,
-                      zoom: 17.5,
+        // appBar: AppBar(
+        //   title: const Text('Map Polyline'),
+        //   backgroundColor: Colors.pink,
+        // ),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, cont) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  TextFieldWithDropDown(
+                    controller: _fromController,
+                    options: const ['Current Location'],
+                    placeholder: 'From',
+                  ),
+                  textField(placeholder: 'To', controller: _toController),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height - 240,
+                    child: GoogleMap(
+                      myLocationEnabled: true,
+                      compassEnabled: true,
+                      onMapCreated: _onMapCreated,
+                      markers: _markers,
+                      polylines: Set<Polyline>.of(_polylines.values),
+                      initialCameraPosition: CameraPosition(
+                        bearing: 0.0,
+                        tilt: 0.0,
+                        target: _mapInitLocation,
+                        zoom: 17.5,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ElevatedButton(
-                          onPressed: _getPolylinesWithLocation,
-                          child: const Text('Polylines with Location'),
-                        ),
-                        ElevatedButton(
-                          onPressed: _getPolylinesWithAddress,
-                          child: const Text('Polylines with Address'),
-                        ),
-                      ],
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ElevatedButton(
+                            onPressed: _getPolylinesWithLocation,
+                            child: const Text('Polylines with Location'),
+                          ),
+                          ElevatedButton(
+                            onPressed: _getPolylinesWithAddress,
+                            child: const Text('Polylines with Address'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: _loading
