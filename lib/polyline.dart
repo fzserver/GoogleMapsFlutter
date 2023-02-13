@@ -264,14 +264,14 @@ class _PolyState extends State<Poly> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          ElevatedButton(
-                            onPressed: _getPolylinesWithLocation,
-                            child: const Text('Polylines with Location'),
-                          ),
-                          ElevatedButton(
-                            onPressed: _getPolylinesWithAddress,
-                            child: const Text('Polylines with Address'),
-                          ),
+                          // ElevatedButton(
+                          //   onPressed: _getPolylinesWithLocation,
+                          //   child: const Text('Polylines with Location'),
+                          // ),
+                          // ElevatedButton(
+                          //   onPressed: _getPolylinesWithAddress,
+                          //   child: const Text('Polylines with Address'),
+                          // ),
                         ],
                       ),
                     ),
