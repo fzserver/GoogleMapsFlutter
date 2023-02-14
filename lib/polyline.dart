@@ -53,35 +53,27 @@ class _PolyState extends State<Poly> {
 
   final List<LocationCoordinates> locationList = [
     LocationCoordinates(
-      name: 'Ghatal',
-      latLong: const LatLng(22.659500, 87.736900),
+      name: 'Jemua, West Bengal 722143',
+      latLong: const LatLng(23.5659506, 87.0863055),
       id: 0,
     ),
     LocationCoordinates(
-      name: 'Panskura',
-      latLong: const LatLng(22.391920, 87.739662),
+      name: 'Kali Karkhana-2',
+      latLong: const LatLng(23.5632203, 87.0902102),
       id: 1,
     ),
     LocationCoordinates(
-      name: 'Kharagpur',
-      latLong: const LatLng(22.391920, 87.739662),
+      name: 'Ghosh Parivahan',
+      latLong: const LatLng(23.5632858, 87.090419),
       id: 2,
-    ),
-    LocationCoordinates(
-      name: 'Daspur',
-      latLong: const LatLng(22.391920, 87.739662),
-      id: 3,
-    ),
-    LocationCoordinates(
-      name: 'Hyderabad',
-      latLong: const LatLng(17.385044, 78.486671),
-      id: 4,
     ),
   ];
 
   final List<String> meetList = [
-    'Himanshu',
-    'Tapas',
+    'Himanshu (HR)',
+    'Tapas (CFO)',
+    'Hemant (CEO)',
+    'Anu (CTO)',
   ];
   String meetselectedperson = 'Himanshu';
 
@@ -142,7 +134,7 @@ class _PolyState extends State<Poly> {
     _setLoadingMenu(true);
     Position position = await _determinePosition();
     _coordinates = await _googleMapPolyline.getCoordinatesWithLocation(
-      origin: LatLng(position.latitude, position.longitude),
+      origin: LatLng(23.5633973, 87.0907071),
       destination: selectedLocation,
       mode: RouteMode.walking,
     );
@@ -297,10 +289,10 @@ class _PolyState extends State<Poly> {
   @override
   Widget build(BuildContext context) {
     _kLake = CameraPosition(
-      bearing: 30.0,
-      tilt: 50.0,
+      bearing: 0.0,
+      tilt: 0.0,
       target: _coordinates?[0] ?? const LatLng(23.5659506, 87.0907071),
-      zoom: 16.12,
+      zoom: 20,
     );
 
     return MaterialApp(
@@ -337,7 +329,7 @@ class _PolyState extends State<Poly> {
                     bearing: 0.0,
                     tilt: 0.0,
                     target: _mapInitLocation,
-                    zoom: 17.5,
+                    zoom: 25,
                   ),
                 ),
               ),
@@ -368,7 +360,7 @@ class _PolyState extends State<Poly> {
                                     // key: ,
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.spaceAround,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
@@ -406,11 +398,11 @@ class _PolyState extends State<Poly> {
                                                 });
                                               },
                                             ),
-                                            Text(DateFormat("yyyy-MM-dd")
+                                            Text(DateFormat(
+                                                    "yyyy-MM-dd  HH:mm a")
                                                 .format(fromDate)),
                                           ],
                                         ),
-
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: DropDownWithBorderLabel(
@@ -425,7 +417,8 @@ class _PolyState extends State<Poly> {
                                             nameController.clear();
                                             phoneController.clear();
                                             Fluttertoast.showToast(
-                                                msg: 'Visitor Pass Created!');
+                                              msg: 'Visitor Pass Created!',
+                                            );
                                           },
                                           child: Text('Save'),
                                           color: Colors.pink[50],
@@ -493,10 +486,37 @@ Widget textField({
     child: TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: placeholder,
-        fillColor: Colors.white,
         filled: true,
+        fillColor: Colors.white,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        label: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.black,
+            ),
+          ),
+          child: Text(
+            placeholder,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(
+            color: Colors.black,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(
+            color: Colors.black,
+          ),
+        ),
+        labelStyle: const TextStyle(
+          color: Colors.black,
+        ),
       ),
     ),
   );
